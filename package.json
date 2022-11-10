@@ -1,0 +1,7 @@
+{
+  "name": "CloudPaymentsSecureDeal",
+  "version": "1.0.0",
+  "dependencies": {
+    "cloudpayments": "^6.0.1"
+  }
+}
