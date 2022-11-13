@@ -39,11 +39,58 @@
 
 </div>
 <div class="pay">
-
+    <form action="" class="payment-form">
+        <div class="field">
+            <label for="againUserId">Payer user ID</label>
+            <input type="number" name="againUserId" id="againUserId">
+        </div>
+        <div class="field">
+            <label for="token">Token</label>
+            <input type="text" name="token" id="token">
+        </div>
+        <div class="field">
+            <label for="amount">Amount</label>
+            <input type="number" name="amount" id="amount">
+        </div>
+        <div class="field">
+            <label for="accumulationId">AccumulationId</label>
+            <input type="text" name="accumulationId" id="accumulationId">
+        </div>
+        <button type="submit">Оплатить</button>
+    </form>
 </div>
 <div class="payout">
-
+    <form action="" class="payout-form">
+        <div class="field">
+            <label for="moreUserId">Receiver user ID</label>
+            <input type="number" name="moreUserId" id="moreUserId">
+        </div>
+        <div class="field">
+            <label for="moreToken">Token</label>
+            <input type="text" name="moreToken" id="moreToken">
+        </div>
+        <div class="field">
+            <label for="moreAmount">Amount</label>
+            <input type="number" name="moreAmount" id="moreAmount">
+        </div>
+        <div class="field">
+            <label for="moreAccumulationId">AccumulationId</label>
+            <input type="text" name="moreAccumulationId" id="moreAccumulationId">
+        </div>
+        <div class="field">
+            <label for="transactions">Transactions (JSON)</label>
+            <input type="text" name="transactions" id="transactions">
+        </div>
+        <button type="submit">Выплатить</button>
+    </form>
 </div>
+
+<form id="secureForm" name="secureForm" action="" method="POST">
+    <input type="hidden" name="PaReq" id="PaReq" value="">
+    <input type="hidden" name="MD" id="MD" value="">
+    <input type="hidden" name="TermUrl" value="">
+</form>
+
 </body>
 <script src="https://checkout.cloudpayments.ru/checkout.js"></script>
 <script src="client.js"></script>

@@ -1,22 +1,69 @@
-const http = require('http');
-const https = require('https');
-const fs = require('fs');
+const express = require('express');
+const bodyParser = require('body-parser');
+const payments = require("./payments").payment;
+const settings = require('./settings.js');
 
-const options = {
-    key: fs.readFileSync('ssl/key.pem'),
-    cert: fs.readFileSync('ssl/cert.pem')
-};
+const host = settings.host;
+const port = settings.port;
 
-const host = '195.43.142.88';
-const port = 443;
+const app = express();
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 
+const payment = new payments('b005598f0d8dad0979fc12b9db8bd7c2',
+    'pk_5d2fc8839c90a7eabecc818c44daa',
+    '03800b2d939a075b48ef0d9665efade4',
+    'pk_eac43a5380e774fa09282743b4fab');
 
-const requestListener = function (req, res) {
-    res.writeHead(200);
-    res.end("My first server!");
-};
+class Endpoint {
 
-const server = https.createServer(options, requestListener);
+    static index(request, response) {
+        response.sendFile(__dirname + "/index.html")
+    }
+
+    static secureIndex(request, response) {
+        payment.linkCardThreeDS(request.body["PaRes"], request.body["MD"], (data) => {
+            response.json(data["Token"]);
+        });
+    }
+
+    static linkCard(request, response) {
+        let ip = request.socket.remoteAddress;
+        payment.linkCardPayment(request.body["cryptogram"], ip, request.body["userId"], (data) => {
+            response.json(data["Model"]);
+        });
+    }
+
+    static pay(request, response) {
+        let data = request.body;
+        payment.payment(data["token"], data["amount"], data["userId"], data["accumulationId"], (data) => {
+            response.json(data["Model"]);
+        });
+    }
+
+    static payout(request, response) {
+        let data = request.body;
+        try {
+            payment.payout(data["token"], data["userId"], data["accumulationId"], data["amount"], data["transactions"],
+                (data) => {
+                    response.json(data["Model"]);
+                });
+        } catch (e) {
+            response.json(e);
+            response.statusCode = 400;
+        }
+    }
+}
+
+app.use(express.static("static"));
+app.get("/", Endpoint.index);
+app.post("/", Endpoint.secureIndex);
+app.post("/linkCard", Endpoint.linkCard);
+app.post("/pay", Endpoint.pay);
+app.post("/payout", Endpoint.payout)
+
+const server = settings.createServer(app);
 server.listen(port, host, () => {
     console.log(`Server is running on https://${host}:${port}`);
 });
