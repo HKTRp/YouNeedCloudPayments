@@ -23,36 +23,40 @@ class Endpoint {
     }
 
     static secureIndex(request, response) {
-        payment.linkCardThreeDS(request.body["PaRes"], request.body["MD"], (data) => {
+        payment.linkCardThreeDS(request.body["PaRes"], request.body["MD"]).then((data) => {
             response.json(data["Token"]);
         });
     }
 
     static linkCard(request, response) {
         let ip = request.socket.remoteAddress;
-        payment.linkCardPayment(request.body["cryptogram"], ip, request.body["userId"], (data) => {
-            response.json(data["Model"]);
+        payment.linkCardPayment(request.body["cryptogram"], ip, request.body["userId"]).then((data) => {
+            response.json(data);
+        }).catch((e) => {
+            response.statusCode = 400;
+            response.end();
         });
     }
 
     static pay(request, response) {
         let data = request.body;
-        payment.payment(data["token"], data["amount"], data["userId"], data["accumulationId"], (data) => {
-            response.json(data["Model"]);
-        });
+        payment.payment(data["token"], data["amount"], data["userId"], data["accumulationId"]).then((data) => {
+            response.json(data);
+        }).catch((e) => {
+            response.statusCode = 400;
+            response.end();
+        })
     }
 
     static payout(request, response) {
         let data = request.body;
-        try {
-            payment.payout(data["token"], data["userId"], data["accumulationId"], data["amount"], data["transactions"],
-                (data) => {
-                    response.json(data["Model"]);
-                });
-        } catch (e) {
-            response.json(e);
+        payment.payout(data["token"], data["userId"], data["accumulationId"], data["amount"], data["transactions"])
+            .then((data) => {
+                response.json(data);
+            }).catch((e) => {
             response.statusCode = 400;
-        }
+            response.end();
+        })
     }
 }
 

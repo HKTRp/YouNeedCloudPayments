@@ -1,4 +1,4 @@
-const BASE_URL = "https://burprop.online:8080/";
+const BASE_URL = "https://burprop.online:8080";
 
 $(function () {
     $("#secureForm").find("input[name=TermUrl]").val(BASE_URL);
@@ -7,7 +7,7 @@ $(function () {
 function makeRequest(data, handleResponse = () => {
 }, url = "", dataType = "json", method = "post") {
     $.ajax({
-        url: BASE_URL + url,
+        url: url,
         method: method,
         data: data,
         dataType: dataType,
@@ -37,6 +37,7 @@ $(function () {
                 alert("Payment " + response["TransactionId"] + " for accumulation " + response["EscrowAccumulationId"])
             }, "/pay");
         } catch (e) {
+            console.log(e);
             alert("Произошла ошибка");
         }
         return false;
@@ -50,15 +51,16 @@ $(function () {
         let amount = $(this).find("#moreAmount").val();
         let accumulationId = $(this).find("#moreAccumulationId").val();
         let transactions = $(this).find("#transactions").val();
-        console.log(userId, token, amount, accumulationId, transactions);
 
         try {
             makeRequest({
                 userId, token, amount, accumulationId, transactions
             }, (response) => {
+                console.log(response);
                 alert("Accumulation " + response["EscrowAccumulationId"] + " closed");
             }, "/payout");
         } catch (e) {
+            console.log(e);
             alert("Произошла ошибка");
         }
         return false;
@@ -79,6 +81,7 @@ $(function () {
                     userId,
                     cryptogram
                 }, (response) => {
+                    console.log("Penis!");
                     if (response["Success"]) {
                         alert("Token is " + response["token"]);
                         return;
