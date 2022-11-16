@@ -66,6 +66,10 @@ class PaymentsService {
         return new Promise((resolve, reject) => {
             this.payerApi.confirm3DSPayment({PaRes, TransactionId: MD}).then((response) => {
                 this._default_handle(response, resolve);
+                this.payerApi.refundPayment({
+                    TransactionId: response.getResponse()["Model"]["TransactionId"],
+                    Amount: 1,
+                })
             }).catch((e) => {
                 reject(e);
             })

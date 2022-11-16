@@ -32,7 +32,7 @@ class Endpoint {
         let ip = request.socket.remoteAddress;
         payment.linkCardPayment(request.body["cryptogram"], ip, request.body["userId"]).then((data) => {
             response.json(data);
-        }).catch((e) => {
+        }).catch(() => {
             response.statusCode = 400;
             response.end();
         });
@@ -42,7 +42,7 @@ class Endpoint {
         let data = request.body;
         payment.payment(data["token"], data["amount"], data["userId"], data["accumulationId"]).then((data) => {
             response.json(data);
-        }).catch((e) => {
+        }).catch(() => {
             response.statusCode = 400;
             response.end();
         })
@@ -53,7 +53,7 @@ class Endpoint {
         payment.payout(data["token"], data["userId"], data["accumulationId"], data["amount"], data["transactions"])
             .then((data) => {
                 response.json(data);
-            }).catch((e) => {
+            }).catch(() => {
             response.statusCode = 400;
             response.end();
         })

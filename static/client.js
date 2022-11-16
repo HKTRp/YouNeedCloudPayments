@@ -81,7 +81,6 @@ $(function () {
                     userId,
                     cryptogram
                 }, (response) => {
-                    console.log("Penis!");
                     if (response["Success"]) {
                         alert("Token is " + response["token"]);
                         return;
